@@ -1,0 +1,36 @@
+kind: pipeline
+name: default
+
+workspace:
+  path: /home/node/app
+
+steps:
+  - name: build
+    image: node:14
+    volumes:
+      - name: npmcache
+        path: /usr/local/share/.cache/yarn
+    commands:
+      - yarn config set registry https://registry.npmmirror.com
+      - yarn
+      - yarn build
+
+  - name: deploy
+    image: node:14
+    volumes:
+      - name: www
+        path: /var/www
+    commands:
+      - cp -rf ./dist/* /var/www/hospital/
+
+volumes:
+  - name: www
+    host:
+      path: /var/www
+  - name: npmcache
+    host:
+      path: /data/npmcache
+
+trigger:
+  branch:
+    - master
