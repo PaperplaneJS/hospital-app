@@ -21,7 +21,7 @@ steps:
       - name: www
         path: /var/www
     commands:
-      - cp -rf ./dist/* /var/www/hospital/
+      - cp -rf ./build/* /var/www/hospital/
 
 volumes:
   - name: www
