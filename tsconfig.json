@@ -27,7 +27,8 @@
     },
     "typeRoots": [
       "node_modules/@types",
-      "src/global.d.ts"
+      "src/global.d.ts",
+      "src/types/*"
     ]
   },
   "include": [

@@ -1,7 +1,8 @@
 import { KeyboardEvent, useMemo, useState } from 'react'
 
+import { LoadingButton } from '@mui/lab'
 import {
-  Button,
+  Alert,
   Checkbox,
   Container,
   FormControl,
@@ -11,25 +12,94 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   Stack,
   TextField,
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
 
-import { provincesAndCities, provinces } from '@/utils/ChinaDivision'
+import { postRecordApi } from '@/apis/record'
+import { provincesAndCities, provinces } from '@/utils/chinaDivision'
 
 import './index.scss'
 
+/** 首页，用户填写提交表单使用 */
 export default function Home(): RC {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [isNoticeShow, setIsNoticeShow] = useState(false)
+  const [noticeText, setNoticeText] = useState('')
+  const [noticeType, setNoticeType] = useState<'success' | 'error'>('success')
+
+  const [bedNumber, setBedNumber] = useState('')
+  const [patientName, setPatientName] = useState('')
+  const [visitorName, setVisitorName] = useState('')
+  const [relationship, setRelationship] = useState('')
+  const [idNumber, setIdNumber] = useState('')
+  const [contactPhone, setContactPhone] = useState('')
+  const [addressDetail, setAddressDetail] = useState('')
+  const [morningTemperature, setMorningTemperature] = useState('')
+  const [afternoonTemperature, setAfternoonTemperature] = useState('')
+
+  const [isSukangCodeOK, setIsSukangCodeOK] = useState(false)
+  const [isXingchengCodeOK, setIsXingchengCodeOK] = useState(false)
+  const [isMijieCodeOK, setIsMijieCodeOK] = useState(false)
+  const [isWuyiqujiechu, setIsWuyiqujiechu] = useState(false)
+  const [isWuzhengzhuang, setIsWuzhengzhuang] = useState(false)
+  const [isHesuanYinxing, setIsHesuanYinxing] = useState(false)
+  const [isOutSuzhou, setIsOutSuzhou] = useState(false)
+
   const [enterDate, setEnterDate] = useState(() => new Date())
   const [hesuanDate, setHesuanDate] = useState(() => new Date())
-  const [provinceId, setProvinceId] = useState<string>('')
-  const [cityId, setCityId] = useState<string>('')
+
+  const [provinceId, setProvinceId] = useState('')
+  const [cityId, setCityId] = useState('')
 
   const currentProvince = useMemo(
     () => provincesAndCities.find(item => item.code === provinceId),
     [provinceId]
   )
+
+  const submitHandler = () => {
+    setIsLoading(true)
+
+    const submitData: IRawRecord = {
+      bedNumber: Number(bedNumber),
+      patientName,
+      visitorName,
+      relationship,
+      idNumber,
+      contactPhone,
+      addressDetail,
+      morningTemperature: Number(morningTemperature),
+      afternoonTemperature: Number(afternoonTemperature),
+      isSukangCodeOK,
+      isXingchengCodeOK,
+      isMijieCodeOK,
+      isWuyiqujiechu,
+      isWuzhengzhuang,
+      isHesuanYinxing,
+      isOutSuzhou,
+      enterDate: enterDate.valueOf(),
+      hesuanDate: hesuanDate.valueOf(),
+      provinceId,
+      cityId,
+    }
+
+    postRecordApi(submitData)
+      .then(res => {
+        setNoticeText(res.result)
+        setNoticeType('success')
+      })
+      .catch(error => {
+        setNoticeText(error.message)
+        setNoticeType('error')
+      })
+      .finally(() => {
+        setIsNoticeShow(true)
+        setIsLoading(false)
+      })
+  }
 
   const focusNext = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') {
@@ -63,6 +133,8 @@ export default function Home(): RC {
               enterKeyHint: 'done',
               onKeyDown: blurCurrent,
             }}
+            value={bedNumber}
+            onChange={e => void setBedNumber(e.target.value)}
             fullWidth
             required
           />
@@ -90,6 +162,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
+            value={patientName}
+            onChange={e => void setPatientName(e.target.value)}
             fullWidth
             required
           />
@@ -102,6 +176,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
+            value={visitorName}
+            onChange={e => void setVisitorName(e.target.value)}
             fullWidth
             required
           />
@@ -114,6 +190,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
+            value={relationship}
+            onChange={e => void setRelationship(e.target.value)}
             fullWidth
             required
           />
@@ -127,6 +205,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
+            value={idNumber}
+            onChange={e => void setIdNumber(e.target.value)}
             fullWidth
             required
           />
@@ -141,6 +221,8 @@ export default function Home(): RC {
               enterKeyHint: 'done',
               onKeyDown: blurCurrent,
             }}
+            value={contactPhone}
+            onChange={e => void setContactPhone(e.target.value)}
             fullWidth
             required
           />
@@ -169,6 +251,7 @@ export default function Home(): RC {
                 labelId="home-city-picker"
                 value={cityId}
                 label="城市"
+                placeholder="选择户籍地城市"
                 onChange={e => void setCityId(e.target.value)}
                 required
               >
@@ -190,6 +273,8 @@ export default function Home(): RC {
                 enterKeyHint: 'done',
                 onKeyDown: blurCurrent,
               }}
+              value={addressDetail}
+              onChange={e => void setAddressDetail(e.target.value)}
               minRows={2}
               maxRows={3}
               multiline
@@ -199,18 +284,63 @@ export default function Home(): RC {
           ) : null}
 
           <FormGroup row>
-            <FormControlLabel control={<Checkbox color="success" />} label="苏康码" />
-            <FormControlLabel control={<Checkbox color="success" />} label="行程码" />
-            <FormControlLabel control={<Checkbox color="success" />} label="密接码" />
+            <FormControlLabel
+              label="苏康码"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isSukangCodeOK}
+                  onChange={e => void setIsSukangCodeOK(e.target.checked)}
+                />
+              }
+            />
+
+            <FormControlLabel
+              label="行程码"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isXingchengCodeOK}
+                  onChange={e => void setIsXingchengCodeOK(e.target.checked)}
+                />
+              }
+            />
+
+            <FormControlLabel
+              label="密接码"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isMijieCodeOK}
+                  onChange={e => void setIsMijieCodeOK(e.target.checked)}
+                />
+              }
+            />
           </FormGroup>
 
           <FormGroup>
             <FormControlLabel
-              style={{ marginTop: '10px' }}
-              control={<Checkbox color="success" />}
               label="无疫区接触史"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isWuyiqujiechu}
+                  onChange={e => void setIsWuyiqujiechu(e.target.checked)}
+                />
+              }
+              style={{ marginTop: '10px' }}
             />
-            <FormControlLabel control={<Checkbox color="success" />} label="近期无咳嗽发热等症状" />
+
+            <FormControlLabel
+              label="近期无咳嗽发热等症状"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isWuzhengzhuang}
+                  onChange={e => void setIsWuzhengzhuang(e.target.checked)}
+                />
+              }
+            />
           </FormGroup>
 
           <MobileDatePicker
@@ -229,8 +359,27 @@ export default function Home(): RC {
           />
 
           <FormGroup>
-            <FormControlLabel control={<Checkbox color="success" />} label="核酸结果为阴性" />
-            <FormControlLabel control={<Checkbox color="success" />} label="是苏州外市" />
+            <FormControlLabel
+              label="核酸结果为阴性"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isHesuanYinxing}
+                  onChange={e => void setIsHesuanYinxing(e.target.checked)}
+                />
+              }
+            />
+
+            <FormControlLabel
+              label="是苏州外市"
+              control={
+                <Checkbox
+                  color="success"
+                  checked={isOutSuzhou}
+                  onChange={e => void setIsOutSuzhou(e.target.checked)}
+                />
+              }
+            />
           </FormGroup>
 
           <Stack direction="row" spacing={2}>
@@ -246,6 +395,8 @@ export default function Home(): RC {
               InputProps={{
                 endAdornment: <InputAdornment position="end">℃</InputAdornment>,
               }}
+              value={morningTemperature}
+              onChange={e => void setMorningTemperature(e.target.value)}
               fullWidth
             />
 
@@ -261,15 +412,33 @@ export default function Home(): RC {
               InputProps={{
                 endAdornment: <InputAdornment position="end">℃</InputAdornment>,
               }}
+              value={afternoonTemperature}
+              onChange={e => void setAfternoonTemperature(e.target.value)}
               fullWidth
             />
           </Stack>
 
-          <Button variant="contained" size="large">
+          <LoadingButton
+            onClick={submitHandler}
+            loading={isLoading}
+            loadingPosition="end"
+            variant="contained"
+            size="large"
+          >
             提交
-          </Button>
+          </LoadingButton>
         </Stack>
       </form>
+
+      <Snackbar
+        open={isNoticeShow}
+        autoHideDuration={3000}
+        onClose={() => void setIsNoticeShow(false)}
+      >
+        <Alert severity={noticeType} sx={{ width: '100%' }}>
+          {noticeText}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }

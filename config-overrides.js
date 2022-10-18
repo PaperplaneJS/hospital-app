@@ -24,6 +24,12 @@ module.exports = {
       camel2DashComponentName: false,
     }),
 
+    fixBabelImports('mui-lab', {
+      libraryName: '@mui/lab',
+      libraryDirectory: '',
+      camel2DashComponentName: false,
+    }),
+
     fixBabelImports("lodash", {
       libraryDirectory: "",
       camel2DashComponentName: false
