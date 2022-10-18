@@ -1,0 +1,13 @@
+.home-page {
+  padding: 20px;
+  background: #fff;
+  min-height: 100vh;
+
+  padding-bottom: 50px;
+
+  &__title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+  }
+}

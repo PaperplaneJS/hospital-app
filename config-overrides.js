@@ -3,7 +3,8 @@ const {
   addBabelPlugins,
   addWebpackAlias,
   fixBabelImports,
-} = require('customize-cra');
+  addWebpackModuleRule,
+} = require('customize-cra')
 
 module.exports = {
   webpack: override(
@@ -22,5 +23,15 @@ module.exports = {
       libraryDirectory: '',
       camel2DashComponentName: false,
     }),
+
+    fixBabelImports("lodash", {
+      libraryDirectory: "",
+      camel2DashComponentName: false
+    }),
+
+    addWebpackModuleRule({
+      test: /\.scss$/,
+      use: ['style-loader', 'css-loader', 'sass-loader'],
+    })
   ),
-};
+}
