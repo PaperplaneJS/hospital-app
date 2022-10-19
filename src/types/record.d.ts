@@ -24,9 +24,3 @@ interface IRawRecord {
   morningTemperature: number
   afternoonTemperature: number
 }
-
-interface IRecord extends ICommonInfo {}
-
-interface IRecordWithId extends IRecord {
-  id: string
-}

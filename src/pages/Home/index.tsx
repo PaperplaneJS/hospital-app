@@ -20,6 +20,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers'
 
 import { postRecordApi } from '@/apis/record'
 import { provincesAndCities, provinces } from '@/utils/chinaDivision'
+import { ensureClientId } from '@/utils/clientId'
 
 import './index.scss'
 
@@ -63,7 +64,9 @@ export default function Home(): RC {
   const submitHandler = () => {
     setIsLoading(true)
 
-    const submitData: IRawRecord = {
+    const submitData: IWithClientId<IRawRecord> = {
+      clientId: ensureClientId(),
+
       bedNumber: Number(bedNumber),
       patientName,
       visitorName,

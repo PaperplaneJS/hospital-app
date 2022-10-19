@@ -25,9 +25,13 @@ interface IPaginated<TData = any> {
 
 type ITimestamp = number
 
-interface ICommonInfo {
-  clientId: string
-
+interface IModifyInfo {
   createTime: ITimestamp
   updateTime: ITimestamp
 }
+
+type IWithModify<T extends object> = T & IModifyInfo
+
+type IWithId<T extends object> = T & { id: string }
+
+type IWithClientId<T extends object> = T & { clientId: string }
