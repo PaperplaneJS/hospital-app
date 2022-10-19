@@ -421,7 +421,6 @@ export default function Home(): RC {
           <LoadingButton
             onClick={submitHandler}
             loading={isLoading}
-            loadingPosition="end"
             variant="contained"
             size="large"
           >
@@ -432,7 +431,7 @@ export default function Home(): RC {
 
       <Snackbar
         open={isNoticeShow}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={() => void setIsNoticeShow(false)}
       >
         <Alert severity={noticeType} sx={{ width: '100%' }}>
