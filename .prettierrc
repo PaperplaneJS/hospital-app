@@ -6,7 +6,7 @@
   "tabWidth": 2,
   "arrowParens": "avoid",
   "endOfLine": "lf",
-  "importOrder": ["^@[^/].+", "^@/.+", "^\\.\\.?/?s?((?!css).)+$", "\\.s?css$"],
+  "importOrder": ["^@?[a-z]+.+", "^@/.+", "^\\.\\.?/?s?((?!css).)+$", "\\.s?css$"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": false,
   "importOrderGroupNamespaceSpecifiers": false
