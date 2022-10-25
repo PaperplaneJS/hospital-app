@@ -1,5 +1,6 @@
 const {
   override,
+  overrideDevServer,
   addBabelPlugins,
   addWebpackAlias,
   fixBabelImports,
@@ -30,9 +31,9 @@ module.exports = {
       camel2DashComponentName: false,
     }),
 
-    fixBabelImports("lodash", {
-      libraryDirectory: "",
-      camel2DashComponentName: false
+    fixBabelImports('lodash', {
+      libraryDirectory: '',
+      camel2DashComponentName: false,
     }),
 
     addWebpackModuleRule({
@@ -40,4 +41,16 @@ module.exports = {
       use: ['style-loader', 'css-loader', 'sass-loader'],
     })
   ),
+
+  devServer: overrideDevServer(devServerConfig => ({
+    ...devServerConfig,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5505',
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+  })),
 }
