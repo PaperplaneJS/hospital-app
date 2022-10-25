@@ -15,9 +15,10 @@ import {
   TextField,
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
-import { KeyboardEvent, useCallback, useMemo, useState } from 'react'
+import { KeyboardEvent, useMemo, useState } from 'react'
 
 import { postRecordApi } from '@/apis/record'
+import { useForm } from '@/services/common'
 import { createEmptyRecord } from '@/services/record'
 import { provincesAndCities, provinces } from '@/utils/chinaDivision'
 import { ensureClientId } from '@/utils/clientId'
@@ -32,11 +33,7 @@ export default function Home(): RC {
   const [noticeText, setNoticeText] = useState('')
   const [noticeType, setNoticeType] = useState<'success' | 'error'>('success')
 
-  const [recordData, setRecordData] = useState(() => createEmptyRecord())
-  const mergeRecordData = useCallback(
-    (field: string, value: any) => void setRecordData(rawData => ({ ...rawData, [field]: value })),
-    []
-  )
+  const [recordData, setRecordData, mergeRecordData] = useForm(createEmptyRecord)
 
   const currentProvince = useMemo(
     () => provincesAndCities.find(item => item.code === recordData.provinceId),
@@ -205,7 +202,10 @@ export default function Home(): RC {
               labelId="home-province-picker"
               value={recordData.provinceId}
               label="户籍地 省份"
-              onChange={e => void mergeRecordData('provinceId', e.target.value)}
+              onChange={e => {
+                mergeRecordData('cityId', '')
+                mergeRecordData('provinceId', e.target.value)
+              }}
               required
             >
               {provinces.map(province => (
