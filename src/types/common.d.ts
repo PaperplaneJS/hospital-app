@@ -35,3 +35,7 @@ type IWithModify<T extends object> = T & IModifyInfo
 type IWithId<T extends object> = T & { id: string }
 
 type IWithClientId<T extends object> = T & { clientId: string }
+
+type IEmpty<T extends object> = {
+  [p: keyof T]: typeof T[p] | string
+}

@@ -1,5 +1,3 @@
-import { KeyboardEvent, useMemo, useState } from 'react'
-
 import { LoadingButton } from '@mui/lab'
 import {
   Alert,
@@ -17,8 +15,10 @@ import {
   TextField,
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
+import { KeyboardEvent, useCallback, useMemo, useState } from 'react'
 
 import { postRecordApi } from '@/apis/record'
+import { createEmptyRecord } from '@/services/record'
 import { provincesAndCities, provinces } from '@/utils/chinaDivision'
 import { ensureClientId } from '@/utils/clientId'
 
@@ -32,61 +32,30 @@ export default function Home(): RC {
   const [noticeText, setNoticeText] = useState('')
   const [noticeType, setNoticeType] = useState<'success' | 'error'>('success')
 
-  const [bedNumber, setBedNumber] = useState('')
-  const [patientName, setPatientName] = useState('')
-  const [visitorName, setVisitorName] = useState('')
-  const [relationship, setRelationship] = useState('')
-  const [idNumber, setIdNumber] = useState('')
-  const [contactPhone, setContactPhone] = useState('')
-  const [addressDetail, setAddressDetail] = useState('')
-  const [morningTemperature, setMorningTemperature] = useState('')
-  const [afternoonTemperature, setAfternoonTemperature] = useState('')
-
-  const [isSukangCodeOK, setIsSukangCodeOK] = useState(false)
-  const [isXingchengCodeOK, setIsXingchengCodeOK] = useState(false)
-  const [isMijieCodeOK, setIsMijieCodeOK] = useState(false)
-  const [isWuyiqujiechu, setIsWuyiqujiechu] = useState(false)
-  const [isWuzhengzhuang, setIsWuzhengzhuang] = useState(false)
-  const [isHesuanYinxing, setIsHesuanYinxing] = useState(false)
-  const [isOutSuzhou, setIsOutSuzhou] = useState(false)
-
-  const [enterDate, setEnterDate] = useState(() => new Date())
-  const [hesuanDate, setHesuanDate] = useState(() => new Date())
-
-  const [provinceId, setProvinceId] = useState('')
-  const [cityId, setCityId] = useState('')
+  const [recordData, setRecordData] = useState(() => createEmptyRecord())
+  const mergeRecordData = useCallback(
+    (field: string, value: any) => void setRecordData(rawData => ({ ...rawData, [field]: value })),
+    []
+  )
 
   const currentProvince = useMemo(
-    () => provincesAndCities.find(item => item.code === provinceId),
-    [provinceId]
+    () => provincesAndCities.find(item => item.code === recordData.provinceId),
+    [recordData.provinceId]
   )
 
   const submitHandler = () => {
     setIsLoading(true)
 
     const submitData: IWithClientId<IRawRecord> = {
+      ...recordData,
       clientId: ensureClientId(),
 
-      bedNumber: Number(bedNumber),
-      patientName,
-      visitorName,
-      relationship,
-      idNumber,
-      contactPhone,
-      addressDetail,
-      morningTemperature: Number(morningTemperature),
-      afternoonTemperature: Number(afternoonTemperature),
-      isSukangCodeOK,
-      isXingchengCodeOK,
-      isMijieCodeOK,
-      isWuyiqujiechu,
-      isWuzhengzhuang,
-      isHesuanYinxing,
-      isOutSuzhou,
-      enterDate: enterDate.valueOf(),
-      hesuanDate: hesuanDate.valueOf(),
-      provinceId,
-      cityId,
+      bedNumber: Number(recordData.bedNumber),
+
+      morningTemperature: Number(recordData.morningTemperature),
+      afternoonTemperature: Number(recordData.afternoonTemperature),
+      enterDate: recordData.enterDate.valueOf(),
+      hesuanDate: recordData.hesuanDate.valueOf(),
     }
 
     postRecordApi(submitData)
@@ -136,8 +105,8 @@ export default function Home(): RC {
               enterKeyHint: 'done',
               onKeyDown: blurCurrent,
             }}
-            value={bedNumber}
-            onChange={e => void setBedNumber(e.target.value)}
+            value={recordData.bedNumber}
+            onChange={e => void mergeRecordData('bedNumber', e.target.value)}
             fullWidth
             required
           />
@@ -145,8 +114,8 @@ export default function Home(): RC {
           <MobileDatePicker
             label="入院时间"
             inputFormat="yyyy年 M月 d日"
-            value={enterDate}
-            onChange={newDate => void setEnterDate(newDate!)}
+            value={recordData.enterDate}
+            onChange={newDate => void mergeRecordData('enterDate', newDate)}
             renderInput={params => <TextField {...params} />}
             showToolbar={false}
             views={['year', 'month', 'day']}
@@ -165,8 +134,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
-            value={patientName}
-            onChange={e => void setPatientName(e.target.value)}
+            value={recordData.patientName}
+            onChange={e => void mergeRecordData('patientName', e.target.value)}
             fullWidth
             required
           />
@@ -179,8 +148,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
-            value={visitorName}
-            onChange={e => void setVisitorName(e.target.value)}
+            value={recordData.visitorName}
+            onChange={e => void mergeRecordData('visitorName', e.target.value)}
             fullWidth
             required
           />
@@ -193,8 +162,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
-            value={relationship}
-            onChange={e => void setRelationship(e.target.value)}
+            value={recordData.relationship}
+            onChange={e => void mergeRecordData('relationship', e.target.value)}
             fullWidth
             required
           />
@@ -208,8 +177,8 @@ export default function Home(): RC {
               enterKeyHint: 'next',
               onKeyDown: focusNext,
             }}
-            value={idNumber}
-            onChange={e => void setIdNumber(e.target.value)}
+            value={recordData.idNumber}
+            onChange={e => void mergeRecordData('idNumber', e.target.value)}
             fullWidth
             required
           />
@@ -224,8 +193,8 @@ export default function Home(): RC {
               enterKeyHint: 'done',
               onKeyDown: blurCurrent,
             }}
-            value={contactPhone}
-            onChange={e => void setContactPhone(e.target.value)}
+            value={recordData.contactPhone}
+            onChange={e => void mergeRecordData('contactPhone', e.target.value)}
             fullWidth
             required
           />
@@ -234,9 +203,9 @@ export default function Home(): RC {
             <InputLabel id="home-province-picker">户籍地 省份</InputLabel>
             <Select
               labelId="home-province-picker"
-              value={provinceId}
+              value={recordData.provinceId}
               label="户籍地 省份"
-              onChange={e => void setProvinceId(e.target.value)}
+              onChange={e => void mergeRecordData('provinceId', e.target.value)}
               required
             >
               {provinces.map(province => (
@@ -252,10 +221,10 @@ export default function Home(): RC {
               <InputLabel id="home-city-picker">城市</InputLabel>
               <Select
                 labelId="home-city-picker"
-                value={cityId}
+                value={recordData.cityId}
                 label="城市"
                 placeholder="选择户籍地城市"
-                onChange={e => void setCityId(e.target.value)}
+                onChange={e => void mergeRecordData('cityId', e.target.value)}
                 required
               >
                 {currentProvince.children.map(city => (
@@ -267,7 +236,7 @@ export default function Home(): RC {
             </FormControl>
           ) : null}
 
-          {cityId ? (
+          {recordData.cityId ? (
             <TextField
               id="home-form__7"
               label="详细地址"
@@ -276,8 +245,8 @@ export default function Home(): RC {
                 enterKeyHint: 'done',
                 onKeyDown: blurCurrent,
               }}
-              value={addressDetail}
-              onChange={e => void setAddressDetail(e.target.value)}
+              value={recordData.addressDetail}
+              onChange={e => void mergeRecordData('addressDetail', e.target.value)}
               minRows={2}
               maxRows={3}
               multiline
@@ -292,8 +261,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isSukangCodeOK}
-                  onChange={e => void setIsSukangCodeOK(e.target.checked)}
+                  checked={recordData.isSukangCodeOK}
+                  onChange={e => void mergeRecordData('isSukangCodeOK', e.target.checked)}
                 />
               }
             />
@@ -303,8 +272,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isXingchengCodeOK}
-                  onChange={e => void setIsXingchengCodeOK(e.target.checked)}
+                  checked={recordData.isXingchengCodeOK}
+                  onChange={e => void mergeRecordData('isXingchengCodeOK', e.target.checked)}
                 />
               }
             />
@@ -314,8 +283,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isMijieCodeOK}
-                  onChange={e => void setIsMijieCodeOK(e.target.checked)}
+                  checked={recordData.isMijieCodeOK}
+                  onChange={e => void mergeRecordData('isMijieCodeOK', e.target.checked)}
                 />
               }
             />
@@ -327,8 +296,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isWuyiqujiechu}
-                  onChange={e => void setIsWuyiqujiechu(e.target.checked)}
+                  checked={recordData.isWuyiqujiechu}
+                  onChange={e => void mergeRecordData('isWuyiqujiechu', e.target.checked)}
                 />
               }
               style={{ marginTop: '10px' }}
@@ -339,8 +308,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isWuzhengzhuang}
-                  onChange={e => void setIsWuzhengzhuang(e.target.checked)}
+                  checked={recordData.isWuzhengzhuang}
+                  onChange={e => void mergeRecordData('isWuzhengzhuang', e.target.checked)}
                 />
               }
             />
@@ -349,8 +318,8 @@ export default function Home(): RC {
           <MobileDatePicker
             label="核酸检测日期 (24小时内)"
             inputFormat="yyyy年 M月 d日"
-            value={hesuanDate}
-            onChange={newDate => void setHesuanDate(newDate!)}
+            value={recordData.hesuanDate}
+            onChange={newDate => void mergeRecordData('hesuanDate', newDate)}
             renderInput={params => <TextField {...params} />}
             showToolbar={false}
             views={['year', 'month', 'day']}
@@ -367,8 +336,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isHesuanYinxing}
-                  onChange={e => void setIsHesuanYinxing(e.target.checked)}
+                  checked={recordData.isHesuanYinxing}
+                  onChange={e => void mergeRecordData('isHesuanYinxing', e.target.checked)}
                 />
               }
             />
@@ -378,8 +347,8 @@ export default function Home(): RC {
               control={
                 <Checkbox
                   color="success"
-                  checked={isOutSuzhou}
-                  onChange={e => void setIsOutSuzhou(e.target.checked)}
+                  checked={recordData.isOutSuzhou}
+                  onChange={e => void mergeRecordData('isOutSuzhou', e.target.checked)}
                 />
               }
             />
@@ -398,8 +367,8 @@ export default function Home(): RC {
               InputProps={{
                 endAdornment: <InputAdornment position="end">℃</InputAdornment>,
               }}
-              value={morningTemperature}
-              onChange={e => void setMorningTemperature(e.target.value)}
+              value={recordData.morningTemperature}
+              onChange={e => void mergeRecordData('morningTemperature', e.target.value)}
               fullWidth
             />
 
@@ -415,8 +384,8 @@ export default function Home(): RC {
               InputProps={{
                 endAdornment: <InputAdornment position="end">℃</InputAdornment>,
               }}
-              value={afternoonTemperature}
-              onChange={e => void setAfternoonTemperature(e.target.value)}
+              value={recordData.afternoonTemperature}
+              onChange={e => void mergeRecordData('afternoonTemperature', e.target.value)}
               fullWidth
             />
           </Stack>
