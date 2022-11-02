@@ -41,11 +41,6 @@
     "build": "react-app-rewired build",
     "eject": "react-app-rewired eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
