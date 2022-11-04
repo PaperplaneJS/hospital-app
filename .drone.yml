@@ -32,7 +32,7 @@ volumes:
       path: /var/www
   - name: npmcache
     host:
-      path: /data/npmcache
+      path: /home/ubuntu/npmcache
 
 trigger:
   branch:
