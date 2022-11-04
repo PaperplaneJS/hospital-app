@@ -28,6 +28,7 @@ import './index.scss'
 /** 首页，用户填写提交表单使用 */
 export default function Home(): RC {
   const [isLoading, setIsLoading] = useState(false)
+  const [isFormDisable, setIsFormDisable] = useState(false)
 
   const [isNoticeShow, setIsNoticeShow] = useState(false)
   const [noticeText, setNoticeText] = useState('')
@@ -104,6 +105,7 @@ export default function Home(): RC {
             }}
             value={recordData.bedNumber}
             onChange={e => void mergeRecordData('bedNumber', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -113,6 +115,7 @@ export default function Home(): RC {
             inputFormat="yyyy年 M月 d日"
             value={recordData.enterDate}
             onChange={newDate => void mergeRecordData('enterDate', newDate)}
+            disabled={isFormDisable}
             renderInput={params => <TextField {...params} />}
             showToolbar={false}
             views={['year', 'month', 'day']}
@@ -133,6 +136,7 @@ export default function Home(): RC {
             }}
             value={recordData.patientName}
             onChange={e => void mergeRecordData('patientName', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -147,6 +151,7 @@ export default function Home(): RC {
             }}
             value={recordData.visitorName}
             onChange={e => void mergeRecordData('visitorName', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -161,6 +166,7 @@ export default function Home(): RC {
             }}
             value={recordData.relationship}
             onChange={e => void mergeRecordData('relationship', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -176,6 +182,7 @@ export default function Home(): RC {
             }}
             value={recordData.idNumber}
             onChange={e => void mergeRecordData('idNumber', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -192,6 +199,7 @@ export default function Home(): RC {
             }}
             value={recordData.contactPhone}
             onChange={e => void mergeRecordData('contactPhone', e.target.value)}
+            disabled={isFormDisable}
             fullWidth
             required
           />
@@ -206,6 +214,7 @@ export default function Home(): RC {
                 mergeRecordData('cityId', '')
                 mergeRecordData('provinceId', e.target.value)
               }}
+              disabled={isFormDisable}
               required
             >
               {provinces.map(province => (
@@ -225,6 +234,7 @@ export default function Home(): RC {
                 label="城市"
                 placeholder="选择户籍地城市"
                 onChange={e => void mergeRecordData('cityId', e.target.value)}
+                disabled={isFormDisable}
                 required
               >
                 {currentProvince.children.map(city => (
@@ -247,6 +257,7 @@ export default function Home(): RC {
               }}
               value={recordData.addressDetail}
               onChange={e => void mergeRecordData('addressDetail', e.target.value)}
+              disabled={isFormDisable}
               minRows={2}
               maxRows={3}
               multiline
@@ -263,6 +274,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isSukangCodeOK}
                   onChange={e => void mergeRecordData('isSukangCodeOK', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -274,6 +286,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isXingchengCodeOK}
                   onChange={e => void mergeRecordData('isXingchengCodeOK', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -285,6 +298,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isMijieCodeOK}
                   onChange={e => void mergeRecordData('isMijieCodeOK', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -298,6 +312,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isWuyiqujiechu}
                   onChange={e => void mergeRecordData('isWuyiqujiechu', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
               style={{ marginTop: '10px' }}
@@ -310,6 +325,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isWuzhengzhuang}
                   onChange={e => void mergeRecordData('isWuzhengzhuang', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -320,6 +336,7 @@ export default function Home(): RC {
             inputFormat="yyyy年 M月 d日"
             value={recordData.hesuanDate}
             onChange={newDate => void mergeRecordData('hesuanDate', newDate)}
+            disabled={isFormDisable}
             renderInput={params => <TextField {...params} />}
             showToolbar={false}
             views={['year', 'month', 'day']}
@@ -338,6 +355,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isHesuanYinxing}
                   onChange={e => void mergeRecordData('isHesuanYinxing', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -349,6 +367,7 @@ export default function Home(): RC {
                   color="success"
                   checked={recordData.isOutSuzhou}
                   onChange={e => void mergeRecordData('isOutSuzhou', e.target.checked)}
+                  disabled={isFormDisable}
                 />
               }
             />
@@ -369,6 +388,7 @@ export default function Home(): RC {
               }}
               value={recordData.morningTemperature}
               onChange={e => void mergeRecordData('morningTemperature', e.target.value)}
+              disabled={isFormDisable}
               fullWidth
             />
 
@@ -386,6 +406,7 @@ export default function Home(): RC {
               }}
               value={recordData.afternoonTemperature}
               onChange={e => void mergeRecordData('afternoonTemperature', e.target.value)}
+              disabled={isFormDisable}
               fullWidth
             />
           </Stack>

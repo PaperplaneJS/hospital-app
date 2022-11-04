@@ -20,13 +20,14 @@ steps:
   - name: deploy
     image: node:14
     volumes:
-      - name: www
-        path: /var/www
+      - name: webroot
+        path: /webroot
     commands:
-      - cp -rf ./build/* /var/www/hospital/
+      - mkdir -p /webroot/hospital/
+      - cp -rf ./build/* /webroot/hospital/
 
 volumes:
-  - name: www
+  - name: webroot
     host:
       path: /var/www
   - name: npmcache
