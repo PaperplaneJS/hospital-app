@@ -417,7 +417,7 @@ export default function Home(): RC {
             variant="contained"
             size="large"
           >
-            提交
+            提交信息
           </LoadingButton>
         </Stack>
       </form>
