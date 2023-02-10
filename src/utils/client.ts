@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.PUBLIC_URL + '/api',
   timeout: 15000,
 })
 
