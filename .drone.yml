@@ -8,11 +8,10 @@ steps:
   - name: build
     image: node:14
     volumes:
-      - name: npmcache
-        path: /usr/local/share/.cache/yarn
+      - name: yarncache
+        path: /home/node/.cache/yarn
     commands:
-      - yarn config set registry https://registry.npmmirror.com
-      - yarn
+      - yarn --registry=https://registry.yarnpkg.com
       - yarn build
     environment:
       CI: false
@@ -25,16 +24,16 @@ steps:
         path: /webroot
     commands:
       - mkdir -p /webroot/hospital/
-      - rm -rf /webroot/hospital/**/*.*
+      - rm -rf /webroot/hospital/*
       - cp -rf ./build/* /webroot/hospital/
 
 volumes:
   - name: webroot
     host:
-      path: /home/ubuntu/www
-  - name: npmcache
+      path: /root/www
+  - name: yarncache
     host:
-      path: /home/ubuntu/npmcache
+      path: /root/.yarncache
 
 trigger:
   branch:
