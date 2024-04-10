@@ -16,6 +16,10 @@ steps:
     environment:
       CI: false
       GENERATE_SOURCEMAP: false
+      COS_SECRET_ID:
+        from_secret: COS_SECRET_ID
+      COS_SECRET_KEY:
+        from_secret: COS_SECRET_KEY
 
   - name: deploy
     image: node:14
